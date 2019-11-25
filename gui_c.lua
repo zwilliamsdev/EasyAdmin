@@ -46,10 +46,35 @@ function handleOrientation(orientation)
 	end
 end
 
+
+
+RegisterCommand('easyadmin', function(source, args)
+	CreateThread(function()
+		banLength = {
+			{label = GetLocalisedText("permanent"), time = 10444633200},
+			{label = GetLocalisedText("oneday"), time = 86400},
+			{label = GetLocalisedText("threedays"), time = 259200},
+			{label = GetLocalisedText("oneweek"), time = 518400},
+			{label = GetLocalisedText("twoweeks"), time = 1123200},
+			{label = GetLocalisedText("onemonth"), time = 2678400},
+			{label = GetLocalisedText("oneyear"), time = 31536000},
+		}
+		if mainMenu:Visible() then
+			mainMenu:Visible(false)
+			_menuPool:Remove()
+			collectgarbage()
+		else
+			GenerateMenu()
+			mainMenu:Visible(true)
+		end
+	end)
+end)
+
 Citizen.CreateThread(function()
 	TriggerServerEvent("EasyAdmin:amiadmin")
 	TriggerServerEvent("EasyAdmin:requestBanlist")
 	TriggerServerEvent("EasyAdmin:requestCachedPlayers")
+
 	if not GetResourceKvpString("ea_menuorientation") then
 		SetResourceKvp("ea_menuorientation", "right")
 		SetResourceKvpInt("ea_menuwidth", 0)
@@ -61,6 +86,7 @@ Citizen.CreateThread(function()
 	end 
 	mainMenu = NativeUI.CreateMenu("EasyAdmin", "~b~Admin Menu", menuOrientation, 0)
 	_menuPool:Add(mainMenu)
+
 	
 		mainMenu:SetMenuWidthOffset(menuWidth)	
 	_menuPool:ControlDisablingEnabled(false)
@@ -146,9 +172,9 @@ function GenerateMenu() -- this is a big ass function
 	-- util stuff
 	players = {}
 	local localplayers = {}
-	for _, i in ipairs(GetActivePlayers()) do
-		table.insert( localplayers, GetPlayerServerId(i) )
-	end
+	--for _, i in ipairs(GetActivePlayers()) do
+	--	table.insert( localplayers, GetPlayerServerId(i) )
+	--end
 	table.sort(localplayers)
 	for i,thePlayer in ipairs(localplayers) do
 		table.insert(players,GetPlayerFromServerId(thePlayer))
