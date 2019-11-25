@@ -532,13 +532,12 @@ end
 
 function MeasureStringWidthNoConvert(str, font, scale)
  --[[
-	BeginTextCommandWidth("STRING")
-    AddLongString(str)
-    SetTextFont(font or 0)
-    SetTextScale(1.0, scale or 0)
-	return EndTextCommandGetWidth(true)
+	Citizen.InvokeNative(0xADA9255D,font or 0)
+	Citizen.InvokeNative(0x4170B650590B3B00, 1.0, scale or 0)
+    local str = CreateVarString(10, "LITERAL_STRING", self._Text)
+	DrawText(str, Position.X, Position.Y)
 	]]
-	return 5.0
+	return (string.len(str)/2)
 end
 function MeasureStringWidth(str, font, scale)
     return MeasureStringWidthNoConvert(str, font, scale) * 1920
@@ -592,7 +591,7 @@ function UIResText:Draw()
     local Position = self:Position()
     Position.X, Position.Y = FormatXWYH(Position.X, Position.Y)
 
-    --SetTextFont(self.Font)
+	Citizen.InvokeNative(0xADA9255D,self.Font)
     SetTextScale(1.0, self.Scale)
     --SetTextColour(self._Colour.R, self._Colour.G, self._Colour.B, self._Colour.A)
 
@@ -625,7 +624,7 @@ end
 function RenderText(Text, X, Y, Font, Scale, R, G, B, A, Alignment, DropShadow, Outline, WordWrap)
     Text = tostring(Text)
     X, Y = FormatXWYH(X, Y)
-  --  SetTextFont(Font or 0)
+  --  Citizen.InvokeNative(0xADA9255D,Font or 0)
     SetTextScale(1.0, Scale or 0)
     SetTextColour(R or 255, G or 255, B or 255, A or 255)
 
@@ -1789,8 +1788,9 @@ function UIMenuHeritageWindow.New(Mum, Dad)
     if not (Mum >= 0 and Mum <= 21) then Mum = 0 end
     if not tonumber(Dad) then Dad = 0 end
     if not (Dad >= 0 and Dad <= 23) then Dad = 0 end
-    _UIMenuHeritageWindow = {
-        Background = Sprite.New("pause_menu_pages_char_mom_dad", "mumdadbg", 0, 0, 431, 228), -- Background is required, must be a sprite or a rectangle.
+	   --Background = Sprite.New("pause_menu_pages_char_mom_dad", "mumdadbg", 0, 0, 431, 228), -- Background is required, must be a sprite or a rectangle.
+	_UIMenuHeritageWindow = {
+		Background = UIResRectangle.New(0, 0, 431, 228, 1, 114, 157, 255),
         MumSprite = Sprite.New("char_creator_portraits", ((Mum < 21) and "female_"..Mum or "special_female_"..(tonumber(string.sub(Mum, 2, 2)) - 1)), 0, 0, 228, 228),
         DadSprite = Sprite.New("char_creator_portraits", ((Dad < 21) and "male_"..Dad or "special_male_"..(tonumber(string.sub(Dad, 2, 2)) - 1)), 0, 0, 228, 228),
         Mum = Mum,
@@ -2393,8 +2393,9 @@ function UIMenu.New(Title, Subtitle, X, Y, TxtDictionary, TxtName)
     if TxtDictionary ~= nil then TxtDictionary = tostring(TxtDictionary) or "commonmenu" else TxtDictionary = "commonmenu" end
     if TxtName ~= nil then TxtName = tostring(TxtName) or "interaction_bgd" else TxtName = "interaction_bgd" end
     local _UIMenu = {
-        Logo = Sprite.New(TxtDictionary, TxtName, 0 + X, 0 + Y, 431, 107),
-        Banner = nil,
+        --Logo = Sprite.New(TxtDictionary, TxtName, 0 + X, 0 + Y, 431, 107),
+		Logo = UIResRectangle.New(0 + X, 0 + Y, 431, 228, 1, 114, 157, 255),
+		Banner = nil,
         Title = UIResText.New(Title, 215 + X, 20 + Y, 1.15, 255, 255, 255, 255, 1, 1),
         Subtitle = {ExtraY = 0},
         WidthOffset = 0,
@@ -2521,7 +2522,8 @@ function UIMenu.New(Title, Subtitle, X, Y, TxtDictionary, TxtName)
     _UIMenu.Description.Rectangle = Sprite.New("commonmenu", "gradient_bgd", _UIMenu.Position.X, 127, 431, 30)
     _UIMenu.Description.Text = UIResText.New("Description", _UIMenu.Position.X + 5, 125, 0.35)
 
-    _UIMenu.Background = Sprite.New("commonmenu", "gradient_bgd", _UIMenu.Position.X, 144 + _UIMenu.Position.Y - 37 + _UIMenu.Subtitle.ExtraY, 290, 25)
+	_UIMenu.Background = Sprite.New("commonmenu", "gradient_bgd", _UIMenu.Position.X, 144 + _UIMenu.Position.Y - 37 + _UIMenu.Subtitle.ExtraY, 290, 25)
+	
 	--[[
     Citizen.CreateThread(function()
         if not HasScaleformMovieLoaded(_UIMenu.InstructionalScaleform) then
