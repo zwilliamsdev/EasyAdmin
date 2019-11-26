@@ -11,6 +11,7 @@ server_scripts {
 
 client_scripts {
 	"dependencies/NativeUI.lua",
+	"dependencies/Controls.lua",
 	"util_shared.lua",
 	"admin_client.lua",
 	"gui_c.lua",

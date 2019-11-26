@@ -532,7 +532,7 @@ function AddLongString(str)
 end
 
 function MeasureStringWidthNoConvert(str, font, scale)
-	return (string.len(str)*scale)/85 -- just guess it for now
+	return (string.len(str)*scale)*0.02 -- just guess it for now
 end
 function MeasureStringWidth(str, font, scale)
     return MeasureStringWidthNoConvert(str, font, scale) * 1920
@@ -600,9 +600,10 @@ function UIResText:Draw()
     if self.Alignment ~= nil then
         if self.Alignment == 1 or self.Alignment == "Center" or self.Alignment == "Centre" then
             SetTextCentre(true)
-        elseif self.Alignment == 2 or self.Alignment == "Right" then
-			Citizen.InvokeNative(0x6B3C4650BC8BEE47, true)
-			Citizen.InvokeNative(0x63145D9C883A1A70, 0, Position.X)
+		elseif self.Alignment == 2 or self.Alignment == "Right" then
+			SetTextCentre(true)
+			--Citizen.InvokeNative(0x6B3C4650BC8BEE47, true)
+			--Citizen.InvokeNative(0x63145D9C883A1A70, 0, Position.X)
         end
     end
 
@@ -633,9 +634,10 @@ function RenderText(Text, X, Y, Font, Scale, R, G, B, A, Alignment, DropShadow, 
     if Alignment ~= nil then
         if Alignment == 1 or Alignment == "Center" or Alignment == "Centre" then
             SetTextCentre(true)
-        elseif Alignment == 2 or Alignment == "Right" then
-			Citizen.InvokeNative(0x6B3C4650BC8BEE47, true)
-			Citizen.InvokeNative(0x63145D9C883A1A70, 0, X)
+		elseif Alignment == 2 or Alignment == "Right" then
+			SetTextCentre(true)
+			--Citizen.InvokeNative(0x6B3C4650BC8BEE47, true)
+			--Citizen.InvokeNative(0x63145D9C883A1A70, 0, X)
         end
     end
 
@@ -1107,10 +1109,11 @@ function UIMenuListItem.New(Text, Items, Index, Description)
     if Index == 0 then Index = 1 end
     local _UIMenuListItem = {
         Base = UIMenuItem.New(Text or "", Description or ""),
-        Items = Items,
-        LeftArrow = UIResText.New("<", 110, 105, 0.35, 255, 255, 255, 255, 0, "Right"),
+		Items = Items,
+		ItemText = UIResText.New("", 290, 104, 0.35, 255, 255, 255, 255, 0, "Right"),
+		LeftArrow = UIResText.New("<", 110, 105, 0.35, 255, 255, 255, 255, 0, "Right"),
         RightArrow = UIResText.New(">", 280, 105, 0.35, 255, 255, 255, 255, 0, "Right"),
-        ItemText = UIResText.New("", 290, 104, 0.35, 255, 255, 255, 255, 0, "Right"),
+
         _Index = tonumber(Index) or 1,
         Panels = {},
         OnListChanged = function(menu, item, newindex) end,
@@ -1131,7 +1134,7 @@ function UIMenuListItem:Position(Y)
     if tonumber(Y) then
         self.LeftArrow:Position(300 + self.Base._Offset.X + self.Base.ParentMenu.WidthOffset, 147 + Y + self.Base._Offset.Y)
         self.RightArrow:Position(400 + self.Base._Offset.X + self.Base.ParentMenu.WidthOffset, 147 + Y + self.Base._Offset.Y)
-        self.ItemText:Position(300 + self.Base._Offset.X + self.Base.ParentMenu.WidthOffset, 147 + Y + self.Base._Offset.Y)
+        self.ItemText:Position(600 + self.Base._Offset.X + self.Base.ParentMenu.WidthOffset, 147 + Y + self.Base._Offset.Y)
         self.Base:Position(Y)
     end
 end
@@ -1297,9 +1300,9 @@ function UIMenuListItem:Draw()
     if self:Selected() then
         self.LeftArrow:Draw()
         self.RightArrow:Draw()
-        self.ItemText:Position(403 + self.Base._Offset.X + self.Base.ParentMenu.WidthOffset, self.ItemText.Y)
+        self.ItemText:Position(375 + self.Base._Offset.X + self.Base.ParentMenu.WidthOffset, self.ItemText.Y)
     else
-        self.ItemText:Position(418 + self.Base._Offset.X + self.Base.ParentMenu.WidthOffset, self.ItemText.Y)
+        self.ItemText:Position(400 + self.Base._Offset.X + self.Base.ParentMenu.WidthOffset, self.ItemText.Y)
     end
 
     self.ItemText:Draw()
@@ -1946,7 +1949,7 @@ end
 function UIMenuGridPanel:Functions()
     local SafeZone = {X = 0, Y = 0}
     if self.ParentItem:SetParentMenu().Settings.ScaleWithSafezone then
-       SafeZone = GetSafeZoneBounds()
+       --SafeZone = GetSafeZoneBounds()
     end
 
     if IsMouseInBounds(self.Grid.X + 20 + SafeZone.X, self.Grid.Y + 20 + SafeZone.Y, self.Grid.Width - 40, self.Grid.Height - 40) then
@@ -2146,7 +2149,7 @@ function UIMenuColourPanel:Functions()
 
     local SafeZone = {X = 0, Y = 0}
     if self.ParentItem:SetParentMenu().Settings.ScaleWithSafezone then
-       SafeZone = GetSafeZoneBounds()
+       --SafeZone = GetSafeZoneBounds()
     end
 
 
@@ -2292,7 +2295,7 @@ function UIMenuPercentagePanel:Percentage(Value)
     else
         local SafeZone = {X = 0, Y = 0}
         if self.ParentItem:SetParentMenu().Settings.ScaleWithSafezone then
-           SafeZone = GetSafeZoneBounds()
+           --SafeZone = GetSafeZoneBounds()
         end
         
         local Progress = (math.round(GetControlNormal(0, "INPUT_CURSOR_X") * 1920) - SafeZone.X) - self.ActiveBar.X
@@ -2331,7 +2334,7 @@ function UIMenuPercentagePanel:Functions()
 
     local SafeZone = {X = 0, Y = 0}
     if self.ParentItem:SetParentMenu().Settings.ScaleWithSafezone then
-       SafeZone = GetSafeZoneBounds()
+       --SafeZone = GetSafeZoneBounds()
     end
 
     if IsMouseInBounds(self.BackgroundBar.X + SafeZone.X, self.BackgroundBar.Y - 4 + SafeZone.Y, self.BackgroundBar.Width, self.BackgroundBar.Height + 8) then
@@ -3315,7 +3318,7 @@ function UIMenu:ProcessMouse()
     local SafeZone = {X = 0, Y = 0}
     local WindowHeight = self:CalculateWindowHeight()
     if self.Settings.ScaleWithSafezone then
-       SafeZone = GetSafeZoneBounds()
+       --SafeZone = GetSafeZoneBounds()
     end
 
     local Limit = #self.Items
