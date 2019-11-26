@@ -1783,9 +1783,8 @@ function UIMenuHeritageWindow.New(Mum, Dad)
     if not (Mum >= 0 and Mum <= 21) then Mum = 0 end
     if not tonumber(Dad) then Dad = 0 end
     if not (Dad >= 0 and Dad <= 23) then Dad = 0 end
-	   --Background = Sprite.New("pause_menu_pages_char_mom_dad", "mumdadbg", 0, 0, 431, 228), -- Background is required, must be a sprite or a rectangle.
 	_UIMenuHeritageWindow = {
-		Background = UIResRectangle.New(0, 0, 431, 228, 1, 114, 157, 255),
+		Background = Sprite.New("pause_menu_pages_char_mom_dad", "mumdadbg", 0, 0, 431, 228), -- Background is required, must be a sprite or a rectangle.
         MumSprite = Sprite.New("char_creator_portraits", ((Mum < 21) and "female_"..Mum or "special_female_"..(tonumber(string.sub(Mum, 2, 2)) - 1)), 0, 0, 228, 228),
         DadSprite = Sprite.New("char_creator_portraits", ((Dad < 21) and "male_"..Dad or "special_male_"..(tonumber(string.sub(Dad, 2, 2)) - 1)), 0, 0, 228, 228),
         Mum = Mum,
@@ -2389,7 +2388,7 @@ function UIMenu.New(Title, Subtitle, X, Y, TxtDictionary, TxtName)
     if TxtName ~= nil then TxtName = tostring(TxtName) or "interaction_bgd" else TxtName = "interaction_bgd" end
     local _UIMenu = {
         --Logo = Sprite.New(TxtDictionary, TxtName, 0 + X, 0 + Y, 431, 107),
-		Logo = UIResRectangle.New(0 + X, 0 + Y, 431, 228, 1, 114, 157, 255),
+		Logo = UIResRectangle.New(0 + X, 0 + Y, 431, 228, 150, 50, 50, 255),
 		Banner = nil,
         Title = UIResText.New(Title, 215 + X, 20 + Y, 1.15, 255, 255, 255, 255, 1, 1),
         Subtitle = {ExtraY = 0},

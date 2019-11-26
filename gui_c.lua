@@ -85,6 +85,7 @@ Citizen.CreateThread(function()
 		menuOrientation = handleOrientation(GetResourceKvpString("ea_menuorientation"))
 	end 
 	mainMenu = NativeUI.CreateMenu("EasyAdmin", "~b~Admin Menu", menuOrientation, 0)
+	
 	_menuPool:Add(mainMenu)
 
 	
@@ -172,9 +173,17 @@ function GenerateMenu() -- this is a big ass function
 	-- util stuff
 	players = {}
 	local localplayers = {}
+
+	--table.insert(localplayers, PlayerId() )
 	--for _, i in ipairs(GetActivePlayers()) do
 	--	table.insert( localplayers, GetPlayerServerId(i) )
 	--end
+
+    for i = 0, 128 do
+		if NetworkIsPlayerActive( i ) then
+		  table.insert( localplayers, GetPlayerServerId(i) )
+		end
+	end
 	table.sort(localplayers)
 	for i,thePlayer in ipairs(localplayers) do
 		table.insert(players,GetPlayerFromServerId(thePlayer))
