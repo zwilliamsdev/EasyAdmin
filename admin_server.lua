@@ -118,7 +118,7 @@ Citizen.CreateThread(function()
 		end
 		
 		-- give player the right settings to work with
-		TriggerClientEvent("EasyAdmin:SetSetting", source, "button",GetConvar("ea_MenuButton", "SwitchShoulder") )
+		TriggerClientEvent("EasyAdmin:SetSetting", source, "button",GetConvar("ea_MenuButton", "OpenJournal") )
 		if GetConvar("ea_alwaysShowButtons", "false") == "true" then
 			TriggerClientEvent("EasyAdmin:SetSetting", source, "forceShowGUIButtons", true)
 		else
