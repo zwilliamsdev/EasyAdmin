@@ -330,10 +330,9 @@ Colours = {
 --]]
 
 function GetResolution()
-	--local W, H = GetActiveScreenResolution()
-	local W, H = 1920, 1080 -- TODO: Reimplement
+	local W, H = 1920, 1080
     if (W/H) > 3.5 then
-        return GetScreenResolution()
+        return 1920, 1080
     else
         return W, H
     end
@@ -493,18 +492,20 @@ function GetByteCount(str)
 end
 
 function AddLongStringForAscii(str)
+	print("ascii")
     local maxbytelength = 99
     for i = 0, GetCharacterCount(str), 99 do
-        AddTextComponentSubstringPlayerName(string.sub(str, i, math.min(maxbytelength, GetCharacterCount(str) - i))) --needs changed
+		Citizen.InvokeNative(0x6C188BE134E074AA, string.sub(str, i, math.min(maxbytelength, GetCharacterCount(str) - i)))
     end
 end
 
 function AddLongStringForUtf8(str)
+	print("ascii")
     local maxbytelength = 99
     local bytecount = GetByteCount(str)
 
     if bytecount < maxbytelength then
-        AddTextComponentSubstringPlayerName(str)
+        Citizen.InvokeNative(0x6C188BE134E074AA,str)
         return
     end
 
@@ -513,12 +514,12 @@ function AddLongStringForUtf8(str)
     for i = 0, GetCharacterCount(str), 1 do
         local length = i - startIndex
         if GetByteCount(string.sub(str, startIndex, length)) > maxbytelength then
-            AddTextComponentSubstringPlayerName(string.sub(str, startIndex, length - 1))
+            Citizen.InvokeNative(0x6C188BE134E074AA,string.sub(str, startIndex, length - 1))
             i = i - 1
             startIndex = startIndex + (length - 1)
         end
     end
-    AddTextComponentSubstringPlayerName(string.sub(str, startIndex, GetCharacterCount(str) - startIndex))
+    Citizen.InvokeNative(0x6C188BE134E074AA,string.sub(str, startIndex, GetCharacterCount(str) - startIndex))
 end 
 
 function AddLongString(str)
@@ -531,14 +532,7 @@ function AddLongString(str)
 end
 
 function MeasureStringWidthNoConvert(str, font, scale)
- --[[
-	Citizen.InvokeNative(0xADA9255D,font or 0)
-	Citizen.InvokeNative(0x4170B650590B3B00, 1.0, scale or 0)
-    local str = CreateVarString(10, "LITERAL_STRING", self._Text)
-	DrawText(str, Position.X, Position.Y)
-	]]
-	--return (string.len(str)/2)
-	return 0
+	return (string.len(str)*scale)/85 -- just guess it for now
 end
 function MeasureStringWidth(str, font, scale)
     return MeasureStringWidthNoConvert(str, font, scale) * 1920
@@ -594,7 +588,7 @@ function UIResText:Draw()
 
 	Citizen.InvokeNative(0xADA9255D,self.Font)
     SetTextScale(1.0, self.Scale)
-    --SetTextColour(self._Colour.R, self._Colour.G, self._Colour.B, self._Colour.A)
+    SetTextColor(self._Colour.R, self._Colour.G, self._Colour.B, self._Colour.A)
 
     if self.DropShadow then
         SetTextDropShadow()
@@ -607,14 +601,14 @@ function UIResText:Draw()
         if self.Alignment == 1 or self.Alignment == "Center" or self.Alignment == "Centre" then
             SetTextCentre(true)
         elseif self.Alignment == 2 or self.Alignment == "Right" then
-            --SetTextRightJustify(true) -- TODO: Reeeimplement
-            --SetTextWrap(0, Position.X)
+			Citizen.InvokeNative(0x6B3C4650BC8BEE47, true)
+			Citizen.InvokeNative(0x63145D9C883A1A70, 0, Position.X)
         end
     end
 
     if tonumber(self.WordWrap) then
         if tonumber(self.WordWrap) ~= 0 then
-            SetTextWrap(Position.X, Position.X + (tonumber(self.WordWrap) / Resolution.Width))
+            Citizen.InvokeNative(0x63145D9C883A1A70,Position.X, Position.X + (tonumber(self.WordWrap) / Resolution.Width))
         end
     end
 
@@ -625,9 +619,9 @@ end
 function RenderText(Text, X, Y, Font, Scale, R, G, B, A, Alignment, DropShadow, Outline, WordWrap)
     Text = tostring(Text)
     X, Y = FormatXWYH(X, Y)
-  --  Citizen.InvokeNative(0xADA9255D,Font or 0)
+    Citizen.InvokeNative(0xADA9255D,Font or 0)
     SetTextScale(1.0, Scale or 0)
-    SetTextColour(R or 255, G or 255, B or 255, A or 255)
+    SetTextColor(R or 255, G or 255, B or 255, A or 255)
 
     if DropShadow then
         SetTextDropShadow()
@@ -640,15 +634,15 @@ function RenderText(Text, X, Y, Font, Scale, R, G, B, A, Alignment, DropShadow, 
         if Alignment == 1 or Alignment == "Center" or Alignment == "Centre" then
             SetTextCentre(true)
         elseif Alignment == 2 or Alignment == "Right" then
-            --SetTextRightJustify(true) -- TODO: Reeeimplement
-            --SetTextWrap(0, X)
+			Citizen.InvokeNative(0x6B3C4650BC8BEE47, true)
+			Citizen.InvokeNative(0x63145D9C883A1A70, 0, X)
         end
     end
 
     if tonumber(WordWrap) then
         if tonumber(WordWrap) ~= 0 then
             WordWrap, _ = FormatXWYH(WordWrap, 0)
-            SetTextWrap(WordWrap, X - WordWrap)
+            Citizen.InvokeNative(0x63145D9C883A1A70,WordWrap, X - WordWrap)
         end
     end
 
@@ -1114,8 +1108,8 @@ function UIMenuListItem.New(Text, Items, Index, Description)
     local _UIMenuListItem = {
         Base = UIMenuItem.New(Text or "", Description or ""),
         Items = Items,
-        LeftArrow = Sprite.New("commonmenu", "arrowleft", 110, 105, 30, 30),
-        RightArrow = Sprite.New("commonmenu", "arrowright", 280, 105, 30, 30),
+        LeftArrow = UIResText.New("<", 110, 105, 0.35, 255, 255, 255, 255, 0, "Right"),
+        RightArrow = UIResText.New(">", 280, 105, 0.35, 255, 255, 255, 255, 0, "Right"),
         ItemText = UIResText.New("", 290, 104, 0.35, 255, 255, 255, 255, 0, "Right"),
         _Index = tonumber(Index) or 1,
         Panels = {},
@@ -1796,13 +1790,13 @@ function UIMenuHeritageWindow.New(Mum, Dad)
         DadSprite = Sprite.New("char_creator_portraits", ((Dad < 21) and "male_"..Dad or "special_male_"..(tonumber(string.sub(Dad, 2, 2)) - 1)), 0, 0, 228, 228),
         Mum = Mum,
         Dad = Dad,
-        _Offset = {X = 0, Y = 0}, -- required
-        ParentMenu = nil, -- required
+        _Offset = {X = 0, Y = 0}, 
+        ParentMenu = nil, 
     }
     return setmetatable(_UIMenuHeritageWindow, UIMenuHeritageWindow)
 end
 
-function UIMenuHeritageWindow:SetParentMenu(Menu) -- required
+function UIMenuHeritageWindow:SetParentMenu(Menu) 
     if Menu() == "UIMenu" then
         self.ParentMenu = Menu
     else
@@ -1810,7 +1804,7 @@ function UIMenuHeritageWindow:SetParentMenu(Menu) -- required
     end
 end
 
-function UIMenuHeritageWindow:Offset(X, Y) -- required
+function UIMenuHeritageWindow:Offset(X, Y) 
     if tonumber(X) or tonumber(Y) then
         if tonumber(X) then
             self._Offset.X = tonumber(X)
@@ -1823,7 +1817,7 @@ function UIMenuHeritageWindow:Offset(X, Y) -- required
     end
 end
 
-function UIMenuHeritageWindow:Position(Y) -- required
+function UIMenuHeritageWindow:Position(Y) 
     if tonumber(Y) then
         self.Background:Position(self._Offset.X, 144 + Y + self._Offset.Y)
         self.MumSprite:Position(self._Offset.X + (self.ParentMenu.WidthOffset/2) + 25, 144 + Y + self._Offset.Y)
@@ -1844,7 +1838,7 @@ function UIMenuHeritageWindow:Index(Mum, Dad)
     self.DadSprite.TxtName = ((self.Dad < 21) and "male_"..self.Dad or "special_male_"..(tonumber(string.sub(Dad, 2, 2)) - 1))
 end
 
-function UIMenuHeritageWindow:Draw() -- required
+function UIMenuHeritageWindow:Draw() 
     self.Background:Size(431 + self.ParentMenu.WidthOffset, 228)
     self.Background:Draw()
     self.DadSprite:Draw()
@@ -1880,7 +1874,7 @@ function UIMenuGridPanel.New(TopText, LeftText, RightText, BottomText)
     return setmetatable(_UIMenuGridPanel, UIMenuGridPanel)
 end
 
-function UIMenuGridPanel:SetParentItem(Item) -- required
+function UIMenuGridPanel:SetParentItem(Item) 
     if Item() == "UIMenuItem" then
         self.ParentItem = Item
     else
@@ -1905,7 +1899,7 @@ function UIMenuGridPanel:CirclePosition(X, Y)
     end
 end
 
-function UIMenuGridPanel:Position(Y) -- required
+function UIMenuGridPanel:Position(Y) 
     if tonumber(Y) then
         local ParentOffsetX, ParentOffsetWidth = self.ParentItem:Offset().X, self.ParentItem:SetParentMenu().WidthOffset
         
@@ -1986,7 +1980,7 @@ function UIMenuGridPanel:Functions()
     end
 end
 
-function UIMenuGridPanel:Draw() -- required
+function UIMenuGridPanel:Draw() 
     if self.Data.Enabled then
         self.Background:Size(431 + self.ParentItem:SetParentMenu().WidthOffset, 275)
 
@@ -2049,7 +2043,7 @@ function UIMenuColourPanel.New(Title, Colours)
     return setmetatable(_UIMenuColourPanel, UIMenuColourPanel)
 end
 
-function UIMenuColourPanel:SetParentItem(Item) -- required
+function UIMenuColourPanel:SetParentItem(Item) 
     if Item() == "UIMenuItem" then
         self.ParentItem = Item
     else
@@ -2065,7 +2059,7 @@ function UIMenuColourPanel:Enabled(Enabled)
     end
 end
 
-function UIMenuColourPanel:Position(Y) -- required
+function UIMenuColourPanel:Position(Y) 
     if tonumber(Y) then
         local ParentOffsetX, ParentOffsetWidth = self.ParentItem:Offset().X, self.ParentItem:SetParentMenu().WidthOffset
 
@@ -2219,7 +2213,7 @@ function UIMenuColourPanel:Functions()
     end
 end
 
-function UIMenuColourPanel:Draw() -- required
+function UIMenuColourPanel:Draw() 
     if self.Data.Enabled then
         self.Background:Size(431 + self.ParentItem:SetParentMenu().WidthOffset, 112)
 
@@ -2264,7 +2258,7 @@ function UIMenuPercentagePanel.New(MinText, MaxText)
     return setmetatable(_UIMenuPercentagePanel, UIMenuPercentagePanel)
 end
 
-function UIMenuPercentagePanel:SetParentItem(Item) -- required
+function UIMenuPercentagePanel:SetParentItem(Item) 
     if Item() == "UIMenuItem" then
         self.ParentItem = Item
     else
@@ -2280,7 +2274,7 @@ function UIMenuPercentagePanel:Enabled(Enabled)
     end
 end
 
-function UIMenuPercentagePanel:Position(Y) -- required
+function UIMenuPercentagePanel:Position(Y) 
     if tonumber(Y) then
         local ParentOffsetX, ParentOffsetWidth = self.ParentItem:Offset().X, self.ParentItem:SetParentMenu().WidthOffset
         self.Background:Position(ParentOffsetX, Y)
@@ -2369,7 +2363,7 @@ function UIMenuPercentagePanel:Functions()
     end
 end
 
-function UIMenuPercentagePanel:Draw() -- required
+function UIMenuPercentagePanel:Draw() 
     if self.Data.Enabled then
         self.Background:Size(431 + self.ParentItem:SetParentMenu().WidthOffset, 76)
         self.Background:Draw()
@@ -2845,8 +2839,10 @@ function UIMenu:Visible(bool)
             return
         end
         if self.Settings.ResetCursorOnOpen then
-            local W, H = GetScreenResolution()
-            --SetCursorLocation(W / 2, H / 2)
+			local W, H = 1920, 1080
+			print(W,H)
+			--SetCursorLocation(W / 2, H / 2)
+			--Citizen.InvokeNative(0xFC695459D4D0E219, W / 2, H / 2)
             --SetCursorSprite(1)
         end
 				collectgarbage()
@@ -3150,9 +3146,9 @@ function UIMenu:GoBack()
         self.ParentMenu:Visible(true)
         self.OnMenuChanged(self, self.ParentMenu, false)
         if self.Settings.ResetCursorOnOpen then
-            	--local W, H = GetActiveScreenResolution()
-			local W, H = 1920, 1080 -- TODO: Reimplement
-            --SetCursorLocation(W / 2, H / 2)
+			local W, H = 1920, 1080
+			--SetCursorLocation(W / 2, H / 2)
+			Citizen.InvokeNative(0xFC695459D4D0E219, W / 2, H / 2)
         end
     end
     self.OnMenuClosed(self)
@@ -3193,9 +3189,11 @@ function UIMenu:Draw()
         --DrawScaleformMovieFullscreen(self.InstructionalScaleform, 255, 255, 255, 255, 0)
     end
 
-    if self.Settings.ScaleWithSafezone then
-       -- ScreenDrawPositionBegin(76, 84)
-       -- ScreenDrawPositionRatio(0, 0, 0, 0)
+	if self.Settings.ScaleWithSafezone then
+	   -- ScreenDrawPositionBegin(76, 84)
+	   Citizen.InvokeNative(0xB8A850F20A067EB6, 76, 84)
+	   -- ScreenDrawPositionRatio(0, 0, 0, 0)
+	   Citizen.InvokeNative(0xF5A2C681787E579D, 0, 0, 0, 0)
     end
 
     if self.ReDraw then
@@ -3233,7 +3231,8 @@ function UIMenu:Draw()
 
     if #self.Items == 0 then
         if self.Settings.ScaleWithSafezone then
-            --ScreenDrawPositionEnd()
+			--ScreenDrawPositionEnd()
+			Citizen.InvokeNative(0xE3A3DB414A373DAB)
         end
         return
     end
@@ -3293,7 +3292,8 @@ function UIMenu:Draw()
     end
 
     if self.Settings.ScaleWithSafezone then
-        --ScreenDrawPositionEnd()
+		--ScreenDrawPositionEnd()
+		Citizen.InvokeNative(0xE3A3DB414A373DAB)
     end
 end
 
