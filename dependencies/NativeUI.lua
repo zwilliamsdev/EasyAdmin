@@ -537,7 +537,8 @@ function MeasureStringWidthNoConvert(str, font, scale)
     local str = CreateVarString(10, "LITERAL_STRING", self._Text)
 	DrawText(str, Position.X, Position.Y)
 	]]
-	return (string.len(str)/2)
+	--return (string.len(str)/2)
+	return 0
 end
 function MeasureStringWidth(str, font, scale)
     return MeasureStringWidthNoConvert(str, font, scale) * 1920
