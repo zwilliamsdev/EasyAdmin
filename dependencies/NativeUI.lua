@@ -614,7 +614,7 @@ function UIResText:Draw()
     end
 
     local str = CreateVarString(10, "LITERAL_STRING", self._Text)
-	DrawText(str, Position.X, Position.Y)
+	DisplayText(str, Position.X, Position.Y)
 end
 
 function RenderText(Text, X, Y, Font, Scale, R, G, B, A, Alignment, DropShadow, Outline, WordWrap)
@@ -650,7 +650,7 @@ function RenderText(Text, X, Y, Font, Scale, R, G, B, A, Alignment, DropShadow, 
 
 	
 	local str = CreateVarString(10, "LITERAL_STRING",Text)
-	DrawText(str, X, Y)
+	DisplayText(str, X, Y)
 end
 
 --[[
