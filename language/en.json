@@ -16,8 +16,8 @@
 	"playermanagement":"Player Management",
 	"servermanagement":"Server Management",
 	"settings":"Settings",
-	"kickplayer":"Kick Player",
-	"banplayer":"Ban Player",
+	"kickplayer":"~r~Kick Player",
+	"banplayer":"~r~Ban Player",
 	"reason":"Reason",
 	"kickreasonguide":"Add a reason to the kick.",
 	"noreason":"No Reason Specified",
@@ -50,7 +50,7 @@
 	"stopresourcebyname":"Stop Resource by Name",
 	"stopresourcebynameguide":"~r~~h~NOTE:~h~~w~ This will stop a resource installed on the server.",
 	"badidea":"Don't do that, please.",
-	"unbanplayer":"Unban Player",
+	"unbanplayer":"~r~Unban Player",
 	"unbanplayerguide":"~r~~h~NOTE:~h~~w~ Pressing Confirm will unban this Player.",
 	"banlistshowtype":"~h~Banlist:~h~ Show Type",
 	"unbanreasons":"Reasons",
@@ -124,6 +124,8 @@
 	"alreadyreported":"You already reported this player!",
 	"reportedusageerror":"Error! Usage: /report name reason",
 	"admincalled":"Successfully called an Admin!",
-
+	
+	"mutedplayer":"**%s** muted **%s**.",
+	"unmutedplayer":"**%s** unmuted **%s**."
 	}
 ]

@@ -485,10 +485,12 @@ Citizen.CreateThread(function()
 				MutedPlayers[playerId] = true
 				TriggerClientEvent("chat:addMessage", src, { args = { "EasyAdmin", getName(playerId) .. " " .. GetLocalisedText("playermuted") } })
 				PrintDebugMessage("Player "..getName(source,true).." muted "..getName(playerId,true))
+				SendWebhookMessage(moderationNotification,string.format(GetLocalisedText("mutedplayer"), getName(source), getName(playerId)))
 			else 
 				MutedPlayers[playerId] = nil
 				TriggerClientEvent("chat:addMessage", src, { args = { "EasyAdmin", getName(playerId) .. " " .. GetLocalisedText("playerunmuted") } })
 				PrintDebugMessage("Player "..getName(source,true).." unmuted "..getName(playerId,true))
+				SendWebhookMessage(moderationNotification,string.format(GetLocalisedText("unmutedplayer"), getName(source), getName(playerId)))
 			end
 		end
 	end)

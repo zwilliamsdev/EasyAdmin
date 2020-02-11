@@ -59,7 +59,7 @@ Citizen.CreateThread(function()
 		menuWidth = GetResourceKvpInt("ea_menuwidth")
 		menuOrientation = handleOrientation(GetResourceKvpString("ea_menuorientation"))
 	end 
-	mainMenu = NativeUI.CreateMenu("EasyAdmin", "~b~Admin Menu", menuOrientation, 0)
+	mainMenu = NativeUI.CreateMenu("DaixCore", "~b~Admin Menu", menuOrientation, 0)
 	_menuPool:Add(mainMenu)
 	
 		mainMenu:SetMenuWidthOffset(menuWidth)	
@@ -623,16 +623,16 @@ function GenerateMenu() -- this is a big ass function
 		menuWidth = 0
 	end
 	
-	if permissions.anon then
-		local thisItem = NativeUI.CreateCheckboxItem(GetLocalisedText("anonymous"), false, GetLocalisedText("anonymousguide"))
-		settingsMenu:AddItem(thisItem)
-		settingsMenu.OnCheckboxChange = function(sender, item, checked_)
-			if item == thisItem then
-				anonymous = checked_
-				TriggerServerEvent("EasyAdmin:SetAnonymous", checked_)
-			end
-		end
-	end
+	-- if permissions.anon then
+	-- 	local thisItem = NativeUI.CreateCheckboxItem(GetLocalisedText("anonymous"), false, GetLocalisedText("anonymousguide"))
+	-- 	settingsMenu:AddItem(thisItem)
+	-- 	settingsMenu.OnCheckboxChange = function(sender, item, checked_)
+	-- 		if item == thisItem then
+	-- 			anonymous = checked_
+	-- 			TriggerServerEvent("EasyAdmin:SetAnonymous", checked_)
+	-- 		end
+	-- 	end
+	-- end
 	_menuPool:ControlDisablingEnabled(false)
 	_menuPool:MouseControlsEnabled(false)
 	
